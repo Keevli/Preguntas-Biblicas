@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+  <!-- Fade overlay for transitions -->
+  <div class="fade-overlay"></div>
+
+  <!-- Instructions overlay -->
+  <div id="instructionsOverlay" class="instructions-overlay">
+      <h2>Instrucciones</h2>
+      <p>Lee cada pregunta y selecciona la respuesta correcta.</p>
+      <button id="startBtn">Comenzar</button>
+  </div>
+
+  <!-- Quiz container -->
+  <div class="quiz-container">
+      <div id="preguntaText"></div>
+      <div id="question"></div>
+      <div class="options">
+          <button class="option-btn"></button>
+          <button class="option-btn"></button>
+          <button class="option-btn"></button>
+      </div>
+      <div id="countdown"></div>
+  </div>
+
+  <script type="module" src="quizLogic.js"></script>
+</body>
+</html>

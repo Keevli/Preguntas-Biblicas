@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Términos y Condiciones - Keevli</title>
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        font-family: 'Carter One', cursive;
+        background-color: rgb(245,202,69);
+        color: #333;
+        padding: 20px;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: auto;
+        text-align: left;
+    }
+
+    h1, h2 {
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        margin-top: 25px;
+        color: #222;
+    }
+
+    .section {
+        margin-bottom: 20px;
+    }
+
+    #back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 15px;
+        background-color: rgb(220, 180, 50);
+        color: black;
+        cursor: pointer;
+        font-family: 'Carter One', cursive;
+        box-shadow: 0 4px 0 rgb(180, 130, 0);
+        transition: all 0.2s ease-in-out;
+    }
+
+    #back-button:hover {
+        background-color: rgb(210, 170, 45);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 rgb(160, 120, 0);
+    }
+
+    #back-button:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgb(160, 120, 0);
+    }
+</style>
+</head>
+<body>
+
+    <!-- 🔙 Back Button -->
+    <button id="back-button">&#9664; Volver</button>
+
+    <h1>Términos y Condiciones</h1>
+    <p style="text-align: center;">Última actualización: 14 de agosto de 2025</p>
+
+    <div class="section">
+        <h2>1. Aceptación de los Términos</h2>
+        <p>Al registrarse o utilizar este juego, usted acepta cumplir con estos Términos y Condiciones. Si no está de acuerdo, no podrá crear una cuenta ni utilizar nuestros servicios.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Creación y Uso de la Cuenta</h2>
+        <ul>
+            <li>Debe tener al menos 6 años para crear una cuenta.</li>
+            <li>La información de registro debe ser verdadera y precisa.</li>
+            <li>El nombre de usuario no puede contener lenguaje ofensivo ni inapropiado.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Conducta del Jugador</h2>
+        <ul>
+            <li>No utilizar hacks, trampas, exploits o cualquier método para obtener ventaja injusta.</li>
+            <li>No publicar contenido ofensivo, ilegal o no apto para todo público.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>4. Propiedad Intelectual</h2>
+        <p>Todos los elementos del juego (gráficos, música, personajes, guion, etc.) son propiedad de Keevli y están protegidos por leyes de derechos de autor. No está permitido copiarlos o utilizarlos fuera del juego sin nuestro permiso escrito.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Suspensión o Eliminación de Cuentas</h2>
+        <p>Podemos suspender o eliminar su cuenta si detectamos conductas prohibidas, incumplimiento de estos términos o actividad sospechosa.</p>
+    </div>
+
+    <div class="section">
+        <h2>6. Actualizaciones del Juego</h2>
+        <p>Nos reservamos el derecho de modificar, actualizar o eliminar contenido, funciones o reglas del juego.</p>
+    </div>
+
+    <div class="section">
+        <h2>7. Privacidad y Datos</h2>
+        <p>Recopilamos y almacenamos datos necesarios para el funcionamiento del juego, como nombre de usuario, progreso y preferencias. No compartimos información personal con terceros sin su consentimiento, excepto cuando la ley lo requiera.</p>
+    </div>
+
+    <div class="section">
+        <h2>8. Limitación de Responsabilidad</h2>
+        <p>No nos hacemos responsables por pérdidas de progreso, errores técnicos o daños indirectos derivados del uso del juego.</p>
+    </div>
+
+    <script>
+        const backButton = document.getElementById('back-button');
+
+        backButton.addEventListener('click', () => {
+            // 🔙 Go back to previous page (like "Más")
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = "more.html"; // fallback if no history
+            }
+        });
+    </script>
+
+</body>
+</html>

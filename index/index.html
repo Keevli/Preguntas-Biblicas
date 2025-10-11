@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Keevli - Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    font-family: 'Carter One', cursive;
+    background-color: rgb(245, 202, 69);
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgb(220, 180, 50);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s, background-color 0.3s;
+}
+
+.toolbar.scrolled {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    background-color: rgb(210, 170, 45);
+}
+
+.toolbar .logo img {
+    height: 40px;
+    width: auto;
+    padding: 5px;
+}
+
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#usernameDisplay {
+    font-family: 'Carter One', cursive;
+    font-size: 24px;
+    color: black;
+    margin-right: 10px;
+}
+
+#profileImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: default; /* disable click */
+    transition: transform 0.15s ease-in-out;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.3);
+}
+
+#profileImg:hover {
+    transform: scale(1.1);
+}
+
+#profileImg:active {
+    transform: scale(0.95);
+}
+
+/* Main content */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px);
+    text-align: center;
+    gap: 30px;
+    padding: 0;
+    transition: transform 0.6s ease;
+}
+
+.home-container.move-up {
+    transform: translateY(-200px);
+}
+
+/* Logo */
+.main-logo {
+    width: 250px;
+    max-width: 80%;
+    height: auto;
+    margin-bottom: 20px;
+    transform: rotate(-5deg);
+    transition: transform 0.3s ease-in-out;
+}
+
+.main-logo:hover {
+    transform: rotate(5deg) scale(1.05);
+}
+
+/* Button container */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Regular Buttons (Perfil, Más) */
+.main-btn {
+    padding: 18px 45px;
+    font-size: 22px;
+    border: none;
+    border-radius: 16px;
+    background-color: rgb(255, 234, 45);
+    color: black;
+    cursor: pointer;
+    font-family: 'Carter One', cursive;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 6px 0 rgb(200, 140, 0);
+}
+
+.main-btn:hover {
+    background-color: rgb(255, 205, 60);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 0 rgb(180, 130, 0);
+}
+
+.main-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 rgb(180, 130, 0);
+}
+
+/* 🎮 HERO "JUGAR" BUTTON — bigger & more playful! */
+#startQuizBtn {
+    padding: 20px 70px;
+    font-size: 32px;
+    border-radius: 25px;
+    background-color: rgb(255, 240, 60);
+    box-shadow: 0 8px 0 rgb(200, 140, 0);
+    transform: rotate(-3deg);
+    transition: all 0.25s ease-in-out;
+}
+
+#startQuizBtn:hover {
+    background-color: rgb(255, 215, 70);
+    transform: rotate(3deg) translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 0 rgb(180, 130, 0);
+}
+
+#startQuizBtn:active {
+    transform: translateY(4px) rotate(0deg);
+    box-shadow: 0 3px 0 rgb(180, 130, 0);
+}
+
+/* Dynamic sliding view */
+#dynamicView {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(223, 183, 64);
+    transition: bottom 0.6s ease;
+    z-index: 1500;
+    overflow: auto;
+}
+
+/* Profile card */
+.profile-container {
+    background-color: rgb(255, 230, 140);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 350px;
+    max-width: 90%;
+    margin: 50px auto;
+}
+
+.profile-container h1 {
+    margin-bottom: 20px;
+}
+
+.profile-container img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.profile-container p, #levelDisplay {
+    font-size: 22px;
+    color: #3d2b00;
+    margin-bottom: 10px;
+}
+
+.selected-pp {
+    box-shadow: 0 0 15px 5px rgb(255, 255, 255);
+    transform: scale(1.2) !important; /* optional: make it pop slightly */
+    transition: all 0.2s ease-in-out;
+}
+
+#levelDisplay {
+    font-size: 36px;
+    color: #ff7f24;
+    margin-bottom: 10px;
+    -webkit-text-stroke: 1px rgb(255, 255, 255);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.stats p {
+    font-size: 26px;
+    color: #3b2a00;
+}
+
+/* Buttons inside profile card */
+.signout-btn, .closeProfileBtn {
+    margin-top: 10px;
+    padding: 12px 25px;
+    font-size: 20px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Carter One', cursive;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.signout-btn {
+    background-color: rgb(220, 90, 50);
+    color: white;
+}
+
+.signout-btn:hover { background-color: rgb(200, 70, 40); }
+
+.closeProfileBtn {
+    background-color: rgb(200, 180, 50);
+    color: black;
+    margin-left: 10px;
+}
+
+.closeProfileBtn:hover { background-color: rgb(180, 160, 40); }
+
+</style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar" id="toolbar">
+    <div class="logo">
+        <img src="KeevliTextLogo.png" alt="Keevli Logo">
+    </div>
+    <div class="toolbar-right">
+        <span id="usernameDisplay"></span>
+        <img id="profileImg" src="profiles/PPB0.png" alt="Perfil" />
+    </div>
+</div>
+
+<!-- Main content -->
+<div class="home-container">
+    <img src="PDLBlogo.png" alt="PDLB Logo" class="main-logo">
+
+    <div class="button-container">
+        <button class="main-btn" id="startQuizBtn">Jugar</button>
+        <button class="main-btn" id="profileBtn">Perfil</button>
+        <button class="main-btn" id="moreBtn">Más</button>
+    </div>
+</div>
+
+<!-- Dynamic sliding view -->
+<div id="dynamicView"></div>
+
+<!-- 🎵 Sound Effect -->
+<audio id="clickSound" src="ClickButton.mp3" preload="auto"></audio>
+<audio id="playSound" src="SelectGameSound.mp3" preload="auto"></audio>
+<audio id="givingPointsSound" src="GivingPointsSound.mp3" preload="auto"></audio>
+
+<div style="
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-family: 'Carter One', cursive;
+    font-size: 20px;
+">
+    <a href="https://www.youtube.com/@keevli" target="_blank" style="
+        color: black;
+        text-decoration: none;
+        transition: color 0.3s, transform 0.1s;
+        display: inline-block;
+    " 
+      onmouseover="this.style.color='red'; this.style.transform='scale(1.1)';" 
+      onmouseout="this.style.color='black'; this.style.transform='scale(1)';"
+      onmousedown="this.style.transform='scale(0.95)';"
+      onmouseup="this.style.transform='scale(1.05)';">
+        Visita nuestro Canal de Youtube, Aqui!
+    </a>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
+    authDomain: "keevli.firebaseapp.com",
+    projectId: "keevli",
+    storageBucket: "keevli.firebasestorage.app",
+    messagingSenderId: "1057187563274",
+    appId: "1:1057187563274:web:df61aed04b3a2c63a19cf3",
+    measurementId: "G-4E8SQT6TL1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.addEventListener("DOMContentLoaded", () => {
+    const profileImg = document.getElementById('profileImg');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+    const profileBtn = document.getElementById('profileBtn');
+    const moreBtn = document.getElementById('moreBtn');
+    const toolbar = document.getElementById('toolbar');
+    const clickSound = document.getElementById('clickSound');
+    const dynamicView = document.getElementById('dynamicView');
+    const homeContainer = document.querySelector('.home-container');
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) window.location.href = "login.html";
+        else {
+            currentUser = user;
+            usernameDisplay.textContent = user.email.split('@')[0];
+            try {
+                const userDoc = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userDoc);
+                profileImg.src = docSnap.exists() ? `profiles/${docSnap.data().profileImage || "PPB0"}.png` : "profiles/PPB0.png";
+            } catch { profileImg.src = "profiles/PPB0.png"; }
+        }
+    });
+
+    function slideUpHTML(htmlContent) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+        homeContainer.classList.add('move-up');
+        dynamicView.innerHTML = htmlContent;
+        dynamicView.style.bottom = '0';
+    }
+
+    const profileHTML = `
+<div class="profile-container">
+    <h1>Perfil</h1>
+    <img id="profileImgLarge" src="profiles/PPB0.png" alt="Perfil">
+    <p id="usernameDisplayProfile">Jugador</p>
+    <div id="levelDisplay">Nivel 1</div>
+    <div class="stats">
+        <p id="points">Puntos: 0</p>
+    </div>
+    <button class="signout-btn" id="signOutBtn">Cerrar Sesión</button>
+    <button class="closeProfileBtn">Volver</button>
+
+    <div id="profileSelection" style="margin-top: 20px;">
+        <h3>Selecciona tu imagen:</h3>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:8px;" id="ppbRow"></div>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:8px;" id="ppgRow"></div>
+    </div>
+</div>
+`;
+
+let userData = {};
+
+profileBtn.addEventListener('click', async () => {
+    slideUpHTML(profileHTML);
+
+    const profileImgLarge = dynamicView.querySelector('#profileImgLarge');
+    const usernameDisplayProfile = dynamicView.querySelector('#usernameDisplayProfile');
+    const pointsDisplay = dynamicView.querySelector('#points');
+    const levelDisplay = dynamicView.querySelector('#levelDisplay');
+    const signOutBtn = dynamicView.querySelector('#signOutBtn');
+    const closeBtn = dynamicView.querySelector('.closeProfileBtn');
+
+    usernameDisplayProfile.textContent = currentUser.email.split('@')[0];
+
+    try {
+        const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+        if (docSnap.exists()) {
+            userData = docSnap.data();
+            profileImgLarge.src = `profiles/${userData.profileImage || "PPB0"}.png`;
+            pointsDisplay.textContent = `Puntos: ${userData.totalPoints || 0}`;
+            levelDisplay.textContent = `Nivel ${Math.floor((userData.totalPoints || 0)/100)+1}`;
+            if (!userData.unlocked) userData.unlocked = ["PPB0","PPG0"]; // free ones
+        }
+    } catch(err){ console.error(err); }
+
+    signOutBtn.onclick = async () => { await signOut(auth); window.location.href="login.html"; };
+    closeBtn.onclick = () => { dynamicView.style.bottom='-100%'; homeContainer.classList.remove('move-up'); };
+
+    const ppbRow = dynamicView.querySelector('#ppbRow');
+    const ppgRow = dynamicView.querySelector('#ppgRow');
+    ppbRow.innerHTML = ''; ppgRow.innerHTML = '';
+
+    const createImageOption = (imgName) => {
+        const img = document.createElement('img');
+        img.src = `profiles/${imgName}.png`;
+        img.style.width = '50px';
+        img.style.height = '50px';
+        img.style.borderRadius = '50%';
+        img.style.cursor = 'pointer';
+        img.style.transition = 'transform 0.15s, filter 0.15s';
+
+        const isUnlocked = userData.unlocked.includes(imgName);
+        img.style.filter = isUnlocked ? 'brightness(1)' : 'brightness(0.5)';
+
+        // Hover + press effect
+        img.addEventListener('mouseover', () => img.style.transform = 'scale(1.2)');
+        img.addEventListener('mouseout', () => img.style.transform = 'scale(1)');
+        img.addEventListener('mousedown', () => img.style.transform = 'scale(0.9)');
+        img.addEventListener('mouseup', () => img.style.transform = 'scale(1.2)');
+        img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
+
+        return img;
+    };
+
+    // Append all images first
+    for (let i = 0; i <= 20; i++) ppbRow.appendChild(createImageOption(`PPB${i}`));
+    for (let i = 0; i <= 20; i++) ppgRow.appendChild(createImageOption(`PPG${i}`));
+
+    // Collect all PP images for convenience
+    const allPPs = [...ppbRow.children, ...ppgRow.children];
+
+    // Highlight the currently selected PP immediately
+    allPPs.forEach(pp => {
+        if (pp.src.includes(userData.profileImage)) {
+            pp.classList.add('selected-pp');
+        } else {
+            pp.classList.remove('selected-pp');
+        }
+
+        // Add click behavior here
+        pp.addEventListener('click', async () => {
+            const imgName = pp.src.split('/').pop().replace('.png', '');
+            const isUnlocked = userData.unlocked.includes(imgName);
+
+            if (!isUnlocked && imgName !== "PPB0" && imgName !== "PPG0") {
+                if (userData.totalPoints < 100) {
+                    alert("No tienes suficientes puntos para desbloquear esta imagen.");
+                    return;
+                }
+                const confirmBuy = confirm(`¿Quieres gastar 100 puntos para desbloquear esta foto de perfil?`);
+                if (!confirmBuy) return;
+
+                // Deduct points & unlock
+                userData.totalPoints -= 100;
+                userData.unlocked.push(imgName);
+                pointsDisplay.textContent = `Puntos: ${userData.totalPoints}`;
+                pp.style.filter = 'brightness(1)';
+
+                // Play GivingPointsSound
+                const givingPointsSound = document.getElementById('givingPointsSound');
+                givingPointsSound.currentTime = 0;
+                givingPointsSound.play();
+            }
+
+            // Update selected glow
+            allPPs.forEach(p => p.classList.remove('selected-pp'));
+            pp.classList.add('selected-pp');
+
+            // Update large image and toolbar
+            profileImgLarge.src = pp.src;
+            profileImg.src = pp.src;
+
+            // Save changes to Firebase
+            try {
+                const userRef = doc(db, "users", currentUser.uid);
+                await setDoc(userRef, { 
+                    profileImage: imgName,
+                    totalPoints: userData.totalPoints,
+                    unlocked: userData.unlocked
+                }, { merge: true });
+            } catch(err){ console.error(err); }
+        });
+    });
+});
+
+const termsHTML = `
+<div class="info-container" style="
+    padding: 20px;
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: rgb(255, 230, 140);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    height: 85vh;
+    overflow-y: auto;
+    font-family: 'Carter One', cursive;
+">
+    <button id="backTermsBtn" style="
+        padding:10px 20px;
+        font-family:'Carter One', cursive;
+        border:none;
+        border-radius:15px;
+        background-color:rgb(220,180,50);
+        cursor:pointer;
+        box-shadow:0 3px 0 rgb(180,130,0);
+        margin-bottom:15px;
+        display:block;
+    ">&#9664; Volver</button>
+
+    <h1 style="text-align:center;">
+        Bienvenido a 
+        <img src="PDLBlogo.png" alt="PDLB Logo" 
+        style="height:60px; vertical-align:middle; margin-left:20px; margin-right:10px; transform: rotate(-8deg);">
+        por
+        <img src="KeevliTextLogo.png" alt="PDLB Logo" style="height:40px; vertical-align:middle; margin-left:8px; margin-bottom:12px;">
+    </h1>
+    <p style="font-size:18px; color:#333;">
+        Esta página contiene información sobre la página y cómo usarla. 
+        Esta es una plataforma interactiva donde puedes <span style="color:#2196F3;">aprender, jugar y crecer</span> en conocimiento bíblico.
+    </p>
+
+    <h2 style="color:#2196F3;">Cómo empezar</h2>
+    <p>
+        Presiona "Jugar" y completa las Trivias para ganar puntos en tu cuenta. <br>
+        Los puntos ganados pueden ser usados para comprar fotos de perfil en la sección "Perfil" <br>
+        Mas puntos tienes, ¡Nivel mas alto eres! <br>
+    </p>
+
+    <h2 style="color:#2196F3;">Tener en cuenta...</h2>
+    <p>
+        La cuenta que esta siendo usada en este sitio tambien puede ser usado para cualquier aplicación o sitio que Keevli haga, guardando todo tu progreso!
+    </p>
+
+    <div class="credits" style="margin-top:30px; border-top:2px solid #ddd; padding-top:10px;">
+
+        <h2 style="color:#2196F3; margin-top:30px;">Sobre el contenido</h2>
+        <p>
+            Nuestro contenido está diseñado para difundir la palabra de Dios a nivel global y ofrecer entretenimiento sano. 
+            No publicamos contenido inapropiado para niños ni contrario a los valores cristianos, sino que brindamos información precisa y de fácil comprensión.
+        </p>
+        <p>
+            El contenido publicado por Keevli no puede ser utilizado como propio. Si su intención es compartir el mensaje evangélico 
+            con un público más amplio, le solicitamos que se ponga en contacto con nosotros a través del correo electrónico 
+            <strong>keevligarcia@gmail.com</strong>. En caso de haber publicado contenido nuestro sin nuestro conocimiento, 
+            le agradeceríamos que nos incluya en los créditos y que no se haga pasar por autor del mismo.
+        </p>
+    </div>
+</div>
+`;
+
+// Update "Más" button
+moreBtn.addEventListener('click', () => {
+    slideUpHTML(termsHTML);
+
+    // Back button inside terms
+    const backTermsBtn = dynamicView.querySelector('#backTermsBtn');
+    backTermsBtn.addEventListener('click', () => {
+        dynamicView.style.bottom = '-100%';
+        homeContainer.classList.remove('move-up');
+    });
+});
+
+
+
+    startQuizBtn.addEventListener('click', () => {
+    playSound.currentTime = 0;
+    playSound.play();
+
+    const fadeDiv = document.createElement('div');
+    fadeDiv.style.position = 'fixed';
+    fadeDiv.style.top = 0;
+    fadeDiv.style.left = 0;
+    fadeDiv.style.width = '100%';
+    fadeDiv.style.height = '100%';
+    fadeDiv.style.backgroundColor = 'white';
+    fadeDiv.style.opacity = 0;
+    fadeDiv.style.zIndex = 2000;
+    fadeDiv.style.transition = 'opacity 0.6s ease';
+    document.body.appendChild(fadeDiv);
+
+    // Trigger fade in
+    requestAnimationFrame(() => {
+        fadeDiv.style.opacity = 1;
+    });
+
+    // Navigate after fade
+    setTimeout(() => {
+        window.location.href = "quiz.html";
+    }, 1000); // match transition duration
+});
+
+    window.addEventListener('scroll', () => {
+        if(window.scrollY>5) toolbar.classList.add('scrolled');
+        else toolbar.classList.remove('scrolled');
+    });
+});
+</script>
+
+</body>
+</html>

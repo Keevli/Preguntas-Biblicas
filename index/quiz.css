@@ -1,0 +1,177 @@
+body {
+    margin: 0;
+    font-family: 'Carter One', cursive;
+    background-color: rgb(245, 202, 69);
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.fade-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+    opacity: 1;
+    z-index: 500;
+
+    display: flex;           /* center children */
+    justify-content: center; /* horizontal */
+    align-items: center;     /* vertical */
+    pointer-events: auto;
+    flex-direction: column;  /* in case multiple elements */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Instructions start invisible */
+.instructions-overlay {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #000;
+    text-align: center;
+    padding: 20px;
+    opacity: 0; /* start invisible */
+    z-index: 1000;
+    pointer-events: auto;
+    transition: opacity 1s ease; /* fade-in */
+}
+
+.instructions-overlay h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.instructions-overlay p {
+    font-size: 1.8rem;
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+
+.instructions-overlay button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    background-color: rgb(220,180,50);
+    border: none;
+    color: #000;
+    transition: opacity 0.2s, transform 0.1s;
+    border-radius: 12px;
+    font-family: 'Carter One', cursive;
+}
+
+.instructions-overlay button:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.instructions-overlay button:active {
+    transform: scale(0.95);
+}
+
+.quiz-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* vertical centering */
+    align-items: center;     /* horizontal centering */
+
+    text-align: center;
+    max-width: 600px;       /* limit width */
+    margin: 0 auto;          /* horizontal centering */
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 900;            /* above fade overlay */
+}
+
+#preguntaText {
+    font-size: 48px;
+    color: #3d2b00;
+    opacity: 0; /* will animate in via JS */
+}
+
+#question {
+    font-size: 28px;
+    margin: 30px 0 20px 0;
+    opacity: 0; /* will animate in via JS */
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    opacity: 0; /* will animate in via JS */
+}
+
+.option-btn {
+    width: 400px;
+    padding: 15px;
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(220,180,50);
+    color: black;
+    font-family: 'Carter One', cursive;
+    transition: transform 0.1s ease-in-out, background-color 0.2s;
+}
+
+.option-btn:hover {
+    background-color: rgb(210,170,45);
+    transform: scale(1.05);
+}
+
+.option-btn:active {
+    transform: scale(0.95);
+}
+
+.option-btn.no-hover:hover {
+    background-color: inherit;
+    transform: none;
+    cursor: default;
+}
+
+#countdown {
+    font-size: 32px;
+    margin-top: 20px;
+    color: #3d2b00;
+    opacity: 1; /* visible by default */
+    transition: opacity 0.3s;
+}
+.hidden {
+    display: none !important;
+}
+
+
+/* Animations for questions/options */
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes slideUpFade {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.hidden {
+    display: none;
+}

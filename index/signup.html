@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Registrarte a Keevli</title>
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
+
+    body {
+        font-family: 'Carter One', cursive;
+        background-size: cover;
+        text-align: center;
+        padding-top: 50px;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+
+    .fullscreen-gif {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -2;
+    }
+
+    @keyframes zoomOut {
+        0% {
+            transform: scale(1.2);
+            filter: brightness(1.1);
+        }
+        100% {
+            transform: scale(1);
+            filter: brightness(1);
+        }
+    }
+
+    .gif-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: -1;
+    }
+
+    .container {
+        position: relative;
+        text-align: center;
+        z-index: 1;
+    }
+
+    input {
+        display: block;
+        margin: 10px auto;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        width: 250px;
+        border: none;
+    }
+
+    button {
+    font-family: 'Carter One', cursive;
+    border: none;
+    cursor: pointer;
+    border-radius: 16px;
+    transition: all 0.25s ease-in-out;
+    transform: rotate(0deg);
+}
+
+/* 🟡 Sign Up button (yellow, playful, smaller) */
+#signupBtn {
+    padding: 10px 32px;
+    font-size: 18px;
+    background-color: rgb(255, 240, 60);
+    color: rgb(255, 255, 255);
+    box-shadow: 0 5px 0 rgb(200, 140, 0);
+    margin-top: 10px;
+}
+
+#signupBtn:hover {
+    transform: scale(1.05);
+    background-color: rgb(255, 255, 120);
+    box-shadow: 0 3px 0 rgb(200, 140, 0);
+}
+
+#signupBtn:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 2px 0 rgb(150, 100, 0);
+}
+
+/* 🔙 Back button (blue, matching smaller style) */
+#back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 9px 28px;
+    font-size: 17px;
+    background-color: rgb(90, 180, 255);
+    color: white;
+    box-shadow: 0 5px 0 rgb(30, 100, 200);
+    border-radius: 16px;
+    transform: rotate(0deg);
+    transition: all 0.25s ease-in-out;
+    cursor: pointer;
+}
+
+#back-button:hover {
+    transform: scale(1.05);
+    background-color: rgb(120, 200, 255);
+    box-shadow: 0 3px 0 rgb(30, 100, 200);
+}
+
+#back-button:active {
+    transform: translateY(3px) scale(0.98);
+    box-shadow: 0 2px 0 rgb(20, 70, 150);
+}
+
+    .error {
+        color: rgb(255, 0, 0);
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+    <button id="back-button" class="back-button" onclick="goBack()">&#9664; Atrás</button>
+    <img src="Header.png" alt="Animated GIF" class="fullscreen-gif">
+    <div class="gif-overlay"></div>
+
+<script>
+const backButton = document.getElementById('back-button');
+if (window.history.length <= 1) {
+    backButton.style.display = 'none';
+}
+function goBack() {
+    window.history.back();
+}
+</script>
+
+<div class="container">
+<h1>Crear una Cuenta</h1>
+
+<input type="text" id="username" placeholder="Nombre de Usuario" required>
+<input type="password" id="password" placeholder="Contraseña" required>
+
+<button id="signupBtn">Crear Cuenta</button>
+
+<p style="font-size: 14px; margin-top: 10px;">
+    Al registrarte aceptas los 
+    <a href="terms.html" style="color: rgb(58, 58, 255); text-decoration: underline;">
+        Términos y Condiciones
+    </a>.
+</p>
+
+<p class="error" id="errorMsg"></p>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
+        authDomain: "keevli.firebaseapp.com",
+        projectId: "keevli",
+        storageBucket: "keevli.firebasestorage.app",
+        messagingSenderId: "1057187563274",
+        appId: "1:1057187563274:web:df61aed04b3a2c63a19cf3",
+        measurementId: "G-4E8SQT6TL1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const errorMsg = document.getElementById("errorMsg");
+
+    document.getElementById("signupBtn").addEventListener("click", () => {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const email = `${username}@keevliapp.com`;
+
+        // Validation rules
+        const onlyLettersRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/; // allows accented Spanish letters too
+
+        if (username.length === 0) {
+            errorMsg.textContent = "Por favor, ingresa un nombre de usuario.";
+            return;
+        }
+
+        if (!onlyLettersRegex.test(username)) {
+            errorMsg.textContent = "El nombre de usuario solo puede contener letras (sin números, emojis ni símbolos).";
+            return;
+        }
+
+        if (username.length > 12) {
+            errorMsg.textContent = "El nombre de usuario no puede tener más de 12 caracteres.";
+            return;
+        }
+
+        if (username.length < 3) {
+            errorMsg.textContent = "El nombre de usuario debe tener al menos 3 letras.";
+            return;
+        }
+
+        // If valid, create the account
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const audio = new Audio('SelectGameSound.mp3'); // success sound
+                audio.play();
+
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 800);
+            })
+            .catch((error) => {
+                errorMsg.textContent = error.message;
+                const audio = new Audio('DisSound.mp3'); // failure sound
+                audio.play();
+            });
+    });
+</script>
+
+</body>
+</html>

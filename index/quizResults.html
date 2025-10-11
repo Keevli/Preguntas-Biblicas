@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Resultados del Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        font-family: 'Carter One', cursive;
+        background-color: rgb(245, 202, 69);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        opacity: 0;
+        transition: opacity 1s ease;
+    }
+
+    #profileImgResult {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+        cursor: default;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+        font-size: 48px;
+        margin: 0 0 20px 0;
+        color: #3d2b00;
+        animation: bounce 1s;
+        text-align: center;
+    }
+
+    #pointsEarned {
+        font-size: 80px;
+        margin-bottom: 30px;
+        transition: color 0.3s;
+        text-align: center;
+        color: #ffea00; /* bright yellow for contrast */
+        -webkit-text-stroke: 1.5px black; /* black outline */
+        text-shadow: 0 4px 6px rgba(0,0,0,0.3); /* soft shadow for depth */
+    }
+
+
+    .confetti {
+        position: fixed;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        pointer-events: none;
+        animation-name: fall;
+        animation-timing-function: linear;
+    }
+
+    @keyframes fall {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(100vh) rotate(360deg); }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+    }
+
+    button {
+        padding: 15px 30px;
+        font-size: 22px;
+        border: none;
+        border-radius: 12px;
+        background-color: rgb(220, 180, 50);
+        color: black;
+        cursor: pointer;
+        font-family: 'Carter One', cursive;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+        background-color: rgb(210, 170, 45);
+        transform: scale(1.05);
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    .flying-point {
+        position: fixed;
+        font-size: 24px;
+        font-family: 'Carter One', cursive;
+        pointer-events: none;
+        transition: transform 1s ease, opacity 1s ease;
+        z-index: 9999;
+    }
+</style>
+</head>
+<body>
+
+<img id="profileImgResult" src="profiles/PPB0.png" alt="Perfil">
+<h1>¡Has Ganado!</h1>
+<div id="pointsEarned">0 puntos</div>
+
+<!-- Back Home Button -->
+<button id="backHomeBtn" onclick="playClickAndGo()">Volver al Inicio</button>
+
+<!-- Click sound -->
+<audio id="clickSound" src="GoToMenuSound.mp3" preload="auto"></audio>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
+    authDomain: "keevli.firebaseapp.com",
+    projectId: "keevli",
+    storageBucket: "keevli.firebasestorage.app",
+    messagingSenderId: "1057187563274",
+    appId: "1:1057187563274:web:df61aed04b3a2c63a19cf3",
+    measurementId: "G-4E8SQT6TL1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const pointsEl = document.getElementById("pointsEarned");
+const profileImgResult = document.getElementById("profileImgResult");
+let finalPoints = parseInt(localStorage.getItem("quizPoints")) || 0;
+
+// Fade in body
+document.body.style.opacity = 1;
+
+// Load profile image
+onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    try {
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const profileId = data.profileImage || "PPB0";
+            profileImgResult.src = `profiles/${profileId}.png`;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+// Convert points to color (red → green)
+function getColor(points) {
+    const min = 20, max = 50;
+    const ratio = Math.min(Math.max((points - min) / (max - min), 0), 1);
+    const r = Math.floor(241 - 241 * ratio);
+    const g = Math.floor(65 + 190 * ratio);
+    const b = 68 - Math.floor(68 * ratio);
+    return `rgb(${r},${g},${b})`;
+}
+
+// Animate points counting
+let current = 0;
+const increment = Math.ceil(finalPoints / 50);
+const sound = new Audio("StartGameSound.mp3");
+
+const interval = setInterval(async () => {
+    current += increment;
+    if (current >= finalPoints) {
+        current = finalPoints;
+        clearInterval(interval);
+        sound.play();
+        startConfetti();
+        flyPoints(current);
+        await addPointsToFirebase(finalPoints);
+    }
+    // 👇 Add "puntos" text after number
+    pointsEl.textContent = `${current} puntos`;
+    pointsEl.style.color = getColor(current);
+}, 40);
+
+// Add points to Firebase
+async function addPointsToFirebase(pointsToAdd) {
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
+        try {
+            const userRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(userRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const currentPoints = data.totalPoints || 0;
+                await updateDoc(userRef, { totalPoints: currentPoints + pointsToAdd });
+            }
+        } catch (err) {
+            console.error("Error updating points:", err);
+        }
+    });
+}
+
+// Confetti animation
+function startConfetti() {
+    const colors = ["#f94144","#f3722c","#f9c74f","#90be6d","#43aa8b","#577590"];
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.width = (Math.random() * 8 + 5) + "px";
+        confetti.style.height = confetti.style.width;
+        confetti.style.animationDuration = (Math.random() * 2 + 3) + "s";
+        confetti.style.opacity = Math.random();
+        document.body.appendChild(confetti);
+        confetti.addEventListener("animationend", () => confetti.remove());
+    }
+}
+
+// Flying points animation
+function flyPoints(points) {
+    const rect = profileImgResult.getBoundingClientRect();
+    for (let i = 0; i < 5; i++) {
+        const fp = document.createElement("div");
+        fp.className = "flying-point";
+        fp.textContent = `+${Math.ceil(points/5)}`;
+        fp.style.left = window.innerWidth/2 + "px";
+        fp.style.top = window.innerHeight/2 + "px";
+        fp.style.color = getColor(points);
+        document.body.appendChild(fp);
+        setTimeout(() => {
+            fp.style.transform = `translate(${rect.left - window.innerWidth/2}px, ${rect.top - window.innerHeight/2}px) scale(0.2)`;
+            fp.style.opacity = 0;
+        }, 50);
+        setTimeout(() => fp.remove(), 1100);
+    }
+}
+</script>
+
+<!-- Inline function for click sound & navigation -->
+<script>
+function playClickAndGo() {
+    const sound = document.getElementById("clickSound");
+    sound.play();
+    document.body.style.opacity = 0;
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 1100);
+}
+</script>
+
+</body>
+</html>
