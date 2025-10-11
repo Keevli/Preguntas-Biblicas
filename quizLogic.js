@@ -19,7 +19,7 @@ let currentQuestionIndex = 0;
 let questions = [];
 let correctAnswersCount = 0;
 
-// 🧠 20 Bible questions
+// 20 Bible questions
 const questionsByLevel = [
     { question: "¿Quién construyó el arca?", options: ["Moisés", "Noé", "Abraham"], answer: 1 },
     { question: "¿Quién fue el primer hombre?", options: ["Adán", "Caín", "Abel"], answer: 0 },
@@ -56,6 +56,21 @@ const questionsByLevel = [
     { question: "¿Cuál profeta fue llevado al cielo en un carro de fuego?", options: ["Elías", "Enoc", "Moisés"], answer: 0 },
     { question: "¿Cuál fue el río que se convirtió en sangre por medio de Moisés?", options: ["Nilo", "Jordán", "Éufrates"], answer: 0 },
     { question: "¿Quién fue la esposa de Abraham?", options: ["Sara", "Rebeca", "Raquel"], answer: 0 },
+    { question: "¿Quién construyó el templo en Jerusalén?", options: ["David", "Salomón", "Saúl"], answer: 1 },
+    { question: "¿Qué animal habló a Balaam?", options: ["Un león", "Una serpiente", "Un burro"], answer: 2 },
+    { question: "¿Cuántos días estuvo Jesús en el desierto?", options: ["30", "40", "50"], answer: 1 },
+    { question: "¿Qué mar se abrió para que pasara Moisés y su pueblo?", options: ["Mar Rojo", "Mar Muerto", "Mar de Galilea"], answer: 0 },
+    { question: "¿Quién subió a un árbol para ver a Jesús?", options: ["Bartimeo", "Zaqueo", "Nicodemo"], answer: 1 },
+    { question: "¿Qué hizo Jesús cuando vio una venta en el templo?", options: ["Les habló con calma", "Los echó fuera", "Se fue del templo"], answer: 1 },
+    { question: "¿Qué cayó del cielo para alimentar a los israelitas en el desierto?", options: ["Pan", "Maná", "Codornices"], answer: 1 },
+    { question: "¿Qué hizo Caín a su hermano Abel?", options: ["Lo enseño", "Lo ignoró", "Lo mató"], answer: 2 },
+    { question: "¿Qué nombre nuevo recibió Saulo después de convertirse?", options: ["Pedro", "Juan", "Pablo"], answer: 2 },
+    { question: "¿Qué mujer escondió a los espías israelitas en Jericó?", options: ["Rut", "Ester", "Rahab"], answer: 2 },
+    { question: "¿Qué día descansó Dios, después de crear el mundo?", options: ["El sexto día", "El séptimo día", "El octavo día"], answer: 1 },
+    { question: "¿Cómo murió Goliat?", options: ["De una piedra", "De una lanza", "De una caída"], answer: 0 },
+    { question: "¿Qué mujer fue suegra de Rut?", options: ["Rebeca", "Noemí", "Sara"], answer: 1 },
+    { question: "¿Quién fue el rey antes de David?", options: ["Saúl", "Salomón", "Samuel"], answer: 0 },
+    { question: "¿Qué apóstol caminó sobre el agua con Jesús?", options: ["Juan", "Pedro", "Santiago"], answer: 1 },
 ];
 
 // 🎲 Get 5 random questions (Fisher–Yates)
@@ -80,8 +95,6 @@ window.addEventListener("load", () => {
 
 startBtn.addEventListener("click", () => {
     const instructionsOverlay = document.querySelector(".instructions-overlay");
-
-    // Make sure fadeOverlay has opacity 1 initially
     fadeOverlay.style.opacity = 1; 
     fadeOverlay.style.transition = "opacity 1s ease";
 
