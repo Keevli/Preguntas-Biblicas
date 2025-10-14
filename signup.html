@@ -163,6 +163,7 @@ function goBack() {
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
     apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
@@ -177,6 +178,7 @@ function goBack() {
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
@@ -210,21 +212,30 @@ function goBack() {
             return;
         }
 
-        // If valid, create the account
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const audio = new Audio('SelectGameSound.mp3'); // success sound
-                audio.play();
+    .then(async (userCredential) => {
+        const user = userCredential.user;
 
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 800);
-            })
-            .catch((error) => {
-                errorMsg.textContent = error.message;
-                const audio = new Audio('DisSound.mp3'); // failure sound
-                audio.play();
-            });
+        const db = getFirestore(app);
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            username: username,
+            email: user.email,
+            totalCoins: 0,
+            totalPoints: 0,
+            profileImage: "PPB0",
+            unlocked: ["PPB0", "PPG0"],
+            ownedCharacters: ["Char1", "CharWom1"],
+            selectedCharacter: "Char1"
+        });
+
+        const audio = new Audio('SelectGameSound.mp3');
+        audio.play();
+
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 800);
+    })
     });
 </script>
 
