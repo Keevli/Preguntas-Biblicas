@@ -29,7 +29,7 @@ const questionsByLevel = [
     { question: "¿Quién recibió los 10 mandamientos?", options: ["Moisés", "Josué", "Elías"], answer: 0 },
     { question: "¿Qué profeta fue tragado por un gran pez?", options: ["Jonás", "Isaías", "Jeremías"], answer: 0 },
     { question: "¿Dónde nació Jesús?", options: ["Nazaret", "Belén", "Jerusalén"], answer: 1 },
-    { question: "¿Quién interpretó los sueños de Faraón?", options: ["José", "Moisés", "Daniel"], answer: 0 },
+    { question: "¿Quién de estos personajes interpretó los sueños de Faraón?", options: ["José", "Moisés", "Daniel"], answer: 0 },
     { question: "¿Qué hizo David contra Goliat?", options: ["Lo ignoró", "Lo enfrentó", "Huyó"], answer: 1 },
     { question: "¿Quién fue vendido por sus hermanos?", options: ["José", "Moisés", "David"], answer: 0 },
     { question: "¿Qué ciudad fue destruida por fuego y azufre?", options: ["Sodoma", "Jericó", "Nínive"], answer: 0 },
@@ -71,6 +71,18 @@ const questionsByLevel = [
     { question: "¿Qué mujer fue suegra de Rut?", options: ["Rebeca", "Noemí", "Sara"], answer: 1 },
     { question: "¿Quién fue el rey antes de David?", options: ["Saúl", "Salomón", "Samuel"], answer: 0 },
     { question: "¿Qué apóstol caminó sobre el agua con Jesús?", options: ["Juan", "Pedro", "Santiago"], answer: 1 },
+    { question: "¿Cuántos días estuvo Jesús muerto antes de resucitar?", options: ["1", "2", "3"], answer: 2 },
+    { question: "¿Qué apóstol era recaudador de impuestos?", options: ["Mateo", "Lucas", "Andrés"], answer: 0 },
+    { question: "¿Cómo se llamaba el padre de Juan el Bautista?", options: ["Zacarías", "José", "Simón"], answer: 0 },
+    { question: "¿Quién interpretó el sueño del rey Nabucodonosor sobre una estatua?", options: ["Daniel", "José", "Ezequiel"], answer: 0 },
+    { question: "¿Cómo se llamaba la madre de Jesús?", options: ["María", "Elisabet", "Marta"], answer: 0 },
+    { question: "¿Quién ayudó a los israelitas a cruzar el Jordán después de Moisés?", options: ["Josué", "Aarón", "Caleb"], answer: 0 },
+    { question: "¿Qué le paso a Zacarías por no creer el anuncio de un ángel?", options: ["Se quedó ciego", "Se quedó mudo", "Se murió"], answer: 1 },
+    { question: "¿Qué joven mató a un león y un oso cuidando sus ovejas?", options: ["Sansón", "David", "Gedeón"], answer: 1 },
+    { question: "¿Qué instrumento musical tocaba David?", options: ["Arpa", "Flauta", "Tambor"], answer: 0 },
+    { question: "¿Cuál fue la señal del pacto de Dios con Noé?", options: ["Una paloma", "El arco iris", "Las nubes"], answer: 1 },
+    { question: "¿Quién fue la reina que arriesgó su vida por su pueblo?", options: ["Ester", "Rut", "Débora"], answer: 0 },
+    { question: "¿Cuál fue el nombre del jardín donde vivieron Adán y Eva?", options: ["Edén", "Getsemaní", "Hebrón"], answer: 0 },
 ];
 
 // 🎲 Get 5 random questions (Fisher–Yates)
