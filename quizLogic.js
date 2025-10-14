@@ -23,7 +23,6 @@ let correctAnswersCount = 0;
 const questionsByLevel = [
     { question: "¿Quién construyó el arca?", options: ["Moisés", "Noé", "Abraham"], answer: 1 },
     { question: "¿Quién fue el primer hombre?", options: ["Adán", "Caín", "Abel"], answer: 0 },
-    { question: "¿Qué fruta comió Eva?", options: ["Manzana", "Higo", "Fruta prohibida"], answer: 2 },
     { question: "¿Quién fue lanzado al foso de los leones?", options: ["Daniel", "José", "David"], answer: 0 },
     { question: "¿Cuántos días y noches llovió en el diluvio?", options: ["30", "40", "50"], answer: 1 },
     { question: "¿Quién recibió los 10 mandamientos?", options: ["Moisés", "Josué", "Elías"], answer: 0 },
@@ -87,10 +86,12 @@ const questionsByLevel = [
 
 // 🎲 Get 5 random questions (Fisher–Yates)
 function getRandomQuestions() {
-    const shuffled = [...questionsByLevel];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    let shuffled = [...questionsByLevel];
+    for (let n = 0; n < 3; n++) {  // shuffle 3 times
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
     }
     return shuffled.slice(0, 5);
 }
@@ -295,9 +296,12 @@ function finishQuiz() {
         fadeOverlay.style.opacity = 1;
     });
 
+    // Store completion and points in localStorage
+    localStorage.setItem("quizCompleted", "true");
+    localStorage.setItem("quizPoints", pointsEarned);
+
     // Redirect after fade completes
     setTimeout(() => {
-        localStorage.setItem("quizPoints", pointsEarned);
         window.location.href = "quizResults.html";
-    }, 2200); // matches transition duration
+    }, 1200); // a little shorter is fine
 }

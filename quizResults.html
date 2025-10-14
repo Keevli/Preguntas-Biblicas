@@ -41,11 +41,10 @@
         margin-bottom: 30px;
         transition: color 0.3s;
         text-align: center;
-        color: #ffea00; /* bright yellow for contrast */
-        -webkit-text-stroke: 1.5px black; /* black outline */
-        text-shadow: 0 4px 6px rgba(0,0,0,0.3); /* soft shadow for depth */
+        color: #ffea00;
+        -webkit-text-stroke: 1.5px black;
+        text-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
-
 
     .confetti {
         position: fixed;
@@ -105,10 +104,8 @@
 <h1>¡Has Ganado!</h1>
 <div id="pointsEarned">0 puntos</div>
 
-<!-- Back Home Button -->
-<button id="backHomeBtn" onclick="playClickAndGo()">Volver al Inicio</button>
+<button id="backHomeBtn">Volver al Inicio</button>
 
-<!-- Click sound -->
 <audio id="clickSound" src="GoToMenuSound.mp3" preload="auto"></audio>
 
 <script type="module">
@@ -127,66 +124,26 @@ const firebaseConfig = {
     measurementId: "G-4E8SQT6TL1"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 const pointsEl = document.getElementById("pointsEarned");
 const profileImgResult = document.getElementById("profileImgResult");
+const backBtn = document.getElementById("backHomeBtn");
+
 let finalPoints = parseInt(localStorage.getItem("quizPoints")) || 0;
+const quizCompleted = localStorage.getItem("quizCompleted") === "true";
 
-// Fade in body
-document.body.style.opacity = 1;
+// 🚫 Cheat protection
+if (!quizCompleted || finalPoints <= 0) {
+    localStorage.removeItem("quizCompleted");
+    localStorage.removeItem("quizPoints");
+    alert("Debes completar el quiz antes de ver tus resultados 😅");
+    window.location.href = "index.html";
+} else {
+    document.body.style.opacity = 1;
 
-// Load profile image
-onAuthStateChanged(auth, async (user) => {
-    if (!user) return;
-    try {
-        const userRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(userRef);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            const profileId = data.profileImage || "PPB0";
-            profileImgResult.src = `profiles/${profileId}.png`;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-});
-
-// Convert points to color (red → green)
-function getColor(points) {
-    const min = 20, max = 50;
-    const ratio = Math.min(Math.max((points - min) / (max - min), 0), 1);
-    const r = Math.floor(241 - 241 * ratio);
-    const g = Math.floor(65 + 190 * ratio);
-    const b = 68 - Math.floor(68 * ratio);
-    return `rgb(${r},${g},${b})`;
-}
-
-// Animate points counting
-let current = 0;
-const increment = Math.ceil(finalPoints / 50);
-const sound = new Audio("StartGameSound.mp3");
-
-const interval = setInterval(async () => {
-    current += increment;
-    if (current >= finalPoints) {
-        current = finalPoints;
-        clearInterval(interval);
-        sound.play();
-        startConfetti();
-        flyPoints(current);
-        await addPointsToFirebase(finalPoints);
-    }
-    // 👇 Add "puntos" text after number
-    pointsEl.textContent = `${current} puntos`;
-    pointsEl.style.color = getColor(current);
-}, 40);
-
-// Add points to Firebase
-async function addPointsToFirebase(pointsToAdd) {
     onAuthStateChanged(auth, async (user) => {
         if (!user) return;
         try {
@@ -194,61 +151,104 @@ async function addPointsToFirebase(pointsToAdd) {
             const docSnap = await getDoc(userRef);
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                const currentPoints = data.totalPoints || 0;
-                await updateDoc(userRef, { totalPoints: currentPoints + pointsToAdd });
+                const profileId = data.profileImage || "PPB0";
+                profileImgResult.src = `profiles/${profileId}.png`;
             }
         } catch (err) {
-            console.error("Error updating points:", err);
+            console.error(err);
         }
     });
-}
 
-// Confetti animation
-function startConfetti() {
-    const colors = ["#f94144","#f3722c","#f9c74f","#90be6d","#43aa8b","#577590"];
-    for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.width = (Math.random() * 8 + 5) + "px";
-        confetti.style.height = confetti.style.width;
-        confetti.style.animationDuration = (Math.random() * 2 + 3) + "s";
-        confetti.style.opacity = Math.random();
-        document.body.appendChild(confetti);
-        confetti.addEventListener("animationend", () => confetti.remove());
+    function getColor(points) {
+        const min = 20, max = 50;
+        const ratio = Math.min(Math.max((points - min) / (max - min), 0), 1);
+        const r = Math.floor(241 - 241 * ratio);
+        const g = Math.floor(65 + 190 * ratio);
+        const b = 68 - Math.floor(68 * ratio);
+        return `rgb(${r},${g},${b})`;
     }
-}
 
-// Flying points animation
-function flyPoints(points) {
-    const rect = profileImgResult.getBoundingClientRect();
-    for (let i = 0; i < 5; i++) {
-        const fp = document.createElement("div");
-        fp.className = "flying-point";
-        fp.textContent = `+${Math.ceil(points/5)}`;
-        fp.style.left = window.innerWidth/2 + "px";
-        fp.style.top = window.innerHeight/2 + "px";
-        fp.style.color = getColor(points);
-        document.body.appendChild(fp);
+    let current = 0;
+    const increment = Math.ceil(finalPoints / 50);
+    const sound = new Audio("StartGameSound.mp3");
+
+    const interval = setInterval(async () => {
+        current += increment;
+        if (current >= finalPoints) {
+            current = finalPoints;
+            clearInterval(interval);
+            sound.play();
+            startConfetti();
+            flyPoints(current);
+            await addPointsToFirebase(finalPoints);
+        }
+        pointsEl.textContent = `${current} puntos`;
+        pointsEl.style.color = getColor(current);
+    }, 40);
+
+    async function addPointsToFirebase(pointsToAdd) {
+        if (pointsToAdd <= 0) return;
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) return;
+            try {
+                const userRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(userRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const currentPoints = data.totalPoints || 0;
+                    await updateDoc(userRef, { totalPoints: currentPoints + pointsToAdd });
+                }
+                localStorage.removeItem("quizPoints");
+                localStorage.removeItem("quizCompleted");
+            } catch (err) {
+                console.error("Error updating points:", err);
+            }
+        });
+    }
+
+    function startConfetti() {
+        const colors = ["#f94144","#f3722c","#f9c74f","#90be6d","#43aa8b","#577590"];
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement("div");
+            confetti.classList.add("confetti");
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.width = (Math.random() * 8 + 5) + "px";
+            confetti.style.height = confetti.style.width;
+            confetti.style.animationDuration = (Math.random() * 2 + 3) + "s";
+            confetti.style.opacity = Math.random();
+            document.body.appendChild(confetti);
+            confetti.addEventListener("animationend", () => confetti.remove());
+        }
+    }
+
+    function flyPoints(points) {
+        const rect = profileImgResult.getBoundingClientRect();
+        for (let i = 0; i < 5; i++) {
+            const fp = document.createElement("div");
+            fp.className = "flying-point";
+            fp.textContent = `+${Math.ceil(points/5)}`;
+            fp.style.left = window.innerWidth/2 + "px";
+            fp.style.top = window.innerHeight/2 + "px";
+            fp.style.color = getColor(points);
+            document.body.appendChild(fp);
+            setTimeout(() => {
+                fp.style.transform = `translate(${rect.left - window.innerWidth/2}px, ${rect.top - window.innerHeight/2}px) scale(0.2)`;
+                fp.style.opacity = 0;
+            }, 50);
+            setTimeout(() => fp.remove(), 1100);
+        }
+    }
+
+    // Back button listener
+    backBtn.addEventListener("click", () => {
+        const sound = document.getElementById("clickSound");
+        sound.play();
+        document.body.style.opacity = 0;
         setTimeout(() => {
-            fp.style.transform = `translate(${rect.left - window.innerWidth/2}px, ${rect.top - window.innerHeight/2}px) scale(0.2)`;
-            fp.style.opacity = 0;
-        }, 50);
-        setTimeout(() => fp.remove(), 1100);
-    }
-}
-</script>
-
-<!-- Inline function for click sound & navigation -->
-<script>
-function playClickAndGo() {
-    const sound = document.getElementById("clickSound");
-    sound.play();
-    document.body.style.opacity = 0;
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 1100);
+            window.location.href = "index.html";
+        }, 1100);
+    });
 }
 </script>
 
