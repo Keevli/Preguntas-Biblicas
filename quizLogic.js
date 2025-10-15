@@ -58,7 +58,7 @@ const questionsByLevel = [
     { question: "¿Quién construyó el templo en Jerusalén?", options: ["David", "Salomón", "Saúl"], answer: 1 },
     { question: "¿Qué animal habló a Balaam?", options: ["Un león", "Una serpiente", "Un burro"], answer: 2 },
     { question: "¿Cuántos días estuvo Jesús en el desierto?", options: ["30", "40", "50"], answer: 1 },
-    { question: "¿Qué mar se abrió para que pasara Moisés y su pueblo?", options: ["Mar Rojo", "Mar Muerto", "Mar de Galilea"], answer: 0 },
+    { question: "¿Qué mar se abrió para que pasara Moisés y el pueblo de Israel?", options: ["Mar Rojo", "Mar Muerto", "Mar de Galilea"], answer: 0 },
     { question: "¿Quién subió a un árbol para ver a Jesús?", options: ["Bartimeo", "Zaqueo", "Nicodemo"], answer: 1 },
     { question: "¿Qué hizo Jesús cuando vio una venta en el templo?", options: ["Les habló con calma", "Los echó fuera", "Se fue del templo"], answer: 1 },
     { question: "¿Qué cayó del cielo para alimentar a los israelitas en el desierto?", options: ["Pan", "Maná", "Codornices"], answer: 1 },
