@@ -70,7 +70,7 @@ const questionsByLevel = [
     { question: "¿Qué mujer fue suegra de Rut?", options: ["Rebeca", "Noemí", "Sara"], answer: 1 },
     { question: "¿Quién fue el rey antes de David?", options: ["Saúl", "Salomón", "Samuel"], answer: 0 },
     { question: "¿Qué apóstol caminó sobre el agua con Jesús?", options: ["Juan", "Pedro", "Santiago"], answer: 1 },
-    { question: "¿Cuántos días estuvo Jesús muerto antes de resucitar?", options: ["1", "2", "3"], answer: 2 },
+    { question: "¿A los cuantos dias resucito Jesus?", options: ["7", "9", "3"], answer: 2 },
     { question: "¿Qué apóstol era recaudador de impuestos?", options: ["Mateo", "Lucas", "Andrés"], answer: 0 },
     { question: "¿Cómo se llamaba el padre de Juan el Bautista?", options: ["Zacarías", "José", "Simón"], answer: 0 },
     { question: "¿Quién interpretó el sueño del rey Nabucodonosor sobre una estatua?", options: ["Daniel", "José", "Ezequiel"], answer: 0 },
@@ -82,9 +82,10 @@ const questionsByLevel = [
     { question: "¿Cuál fue la señal del pacto de Dios con Noé?", options: ["Una paloma", "El arco iris", "Las nubes"], answer: 1 },
     { question: "¿Quién fue la reina que arriesgó su vida por su pueblo?", options: ["Ester", "Rut", "Débora"], answer: 0 },
     { question: "¿Cuál fue el nombre del jardín donde vivieron Adán y Eva?", options: ["Edén", "Getsemaní", "Hebrón"], answer: 0 },
+    { question: "¿Quien de estos fue un hermano de José?", options: ["Jacob", "Elias", "Ruben"], answer: 2 },
 ];
 
-// 🎲 Get 5 random questions (Fisher–Yates)
+// Random questions
 function getRandomQuestions() {
     let shuffled = [...questionsByLevel];
     for (let n = 0; n < 3; n++) {  // shuffle 3 times
@@ -303,5 +304,5 @@ function finishQuiz() {
     // Redirect after fade completes
     setTimeout(() => {
         window.location.href = "quizResults.html";
-    }, 1200); // a little shorter is fine
+    }, 1200);
 }
