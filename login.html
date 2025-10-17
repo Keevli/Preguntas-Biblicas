@@ -23,6 +23,7 @@
         position: relative;
         text-align: center;
         z-index: 1;
+        max-width: 380px;
     }
 
     .fullscreen-gif {
@@ -37,14 +38,8 @@
     }
 
     @keyframes zoomOut {
-        0% {
-            transform: scale(1.2);
-            filter: brightness(1.1);
-        }
-        100% {
-            transform: scale(1);
-            filter: brightness(1);
-        }
+        0% { transform: scale(1.2); filter: brightness(1.1); }
+        100% { transform: scale(1); filter: brightness(1); }
     }
 
     .gif-overlay {
@@ -56,73 +51,96 @@
         z-index: -1;
     }
 
-    input {
+    .input-wrapper {
+        position: relative;
         display: block;
         margin: 10px auto;
-        padding: 10px;
-        font-size: 16px;
         width: 250px;
-        border-radius: 8px;
-        border: none;
+        width: 100%;
     }
 
-button {
-    font-family: 'Carter One', cursive;
+    .input-wrapper input {
+    width: 100%;
+    padding: 10px 40px 10px 10px; /* leave space for eye icon */
+    font-size: 16px;
+    border-radius: 8px;
     border: none;
+    box-sizing: border-box;
+}
+
+    input {
+        width: 100%;
+        padding: 10px 40px 10px 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        box-sizing: border-box;
+    }
+
+    .eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     cursor: pointer;
-    border-radius: 16px;
-    transition: all 0.25s ease-in-out;
-    transform: rotate(0deg);
+    width: 20px;
+    height: 20px;
 }
 
-/* 🟡 Iniciar button (yellow, playful, smaller) */
-#loginBtn {
-    padding: 10px 32px;
-    font-size: 18px;
-    background-color: rgb(222, 208, 52);
-    color: rgb(255, 255, 255);
-    box-shadow: 0 5px 0 rgb(200, 140, 0);
-    margin-top: 10px;
-}
+    button {
+        font-family: 'Carter One', cursive;
+        border: none;
+        cursor: pointer;
+        border-radius: 16px;
+        transition: all 0.25s ease-in-out;
+    }
 
-#loginBtn:hover:not(:disabled) {
-    transform: scale(1.05);
-    background-color: rgb(255, 255, 120);
-    box-shadow: 0 3px 0 rgb(200, 140, 0);
-}
+    #loginBtn {
+        padding: 10px 32px;
+        font-size: 18px;
+        background-color: rgb(222, 208, 52);
+        color: rgb(255, 255, 255);
+        box-shadow: 0 5px 0 rgb(200, 140, 0);
+        margin-top: 10px;
+    }
 
-#loginBtn:active:not(:disabled) {
-    transform: translateY(3px) scale(0.98);
-    box-shadow: 0 2px 0 rgb(150, 100, 0);
-}
+    #loginBtn:hover:not(:disabled) {
+        transform: scale(1.05);
+        background-color: rgb(255, 255, 120);
+        box-shadow: 0 3px 0 rgb(200, 140, 0);
+    }
 
-#loginBtn:disabled {
-    background-color: rgb(180, 180, 80);
-    cursor: not-allowed;
-    transform: scale(1);
-    box-shadow: 0 3px 0 rgb(150, 150, 50);
-}
+    #loginBtn:active:not(:disabled) {
+        transform: translateY(3px) scale(0.98);
+        box-shadow: 0 2px 0 rgb(150, 100, 0);
+    }
 
-/* 🟦 Signup button (blue, matching smaller style) */
-#goSignupBtn {
-    padding: 9px 28px;
-    font-size: 17px;
-    background-color: rgb(90, 180, 255);
-    color: white;
-    box-shadow: 0 5px 0 rgb(30, 100, 200);
-    margin-top: 8px;
-}
+    #loginBtn:disabled {
+        background-color: rgb(180, 180, 80);
+        cursor: not-allowed;
+        transform: scale(1);
+        box-shadow: 0 3px 0 rgb(150, 150, 50);
+    }
 
-#goSignupBtn:hover {
-    transform: scale(1.05);
-    background-color: rgb(120, 200, 255);
-    box-shadow: 0 3px 0 rgb(30, 100, 200);
-}
+    #goSignupBtn {
+        padding: 9px 28px;
+        font-size: 17px;
+        background-color: rgb(90, 180, 255);
+        color: white;
+        box-shadow: 0 5px 0 rgb(30, 100, 200);
+        margin-top: 8px;
+    }
 
-#goSignupBtn:active {
-    transform: translateY(3px) scale(0.98);
-    box-shadow: 0 2px 0 rgb(20, 70, 150);
-}
+    #goSignupBtn:hover {
+        transform: scale(1.05);
+        background-color: rgb(120, 200, 255);
+        box-shadow: 0 3px 0 rgb(30, 100, 200);
+    }
+
+    #goSignupBtn:active {
+        transform: translateY(3px) scale(0.98);
+        box-shadow: 0 2px 0 rgb(20, 70, 150);
+    }
 
     .error {
         color: rgb(229, 0, 0);
@@ -140,7 +158,11 @@ button {
     <h1>Iniciar Sesión</h1>
 
     <input type="text" id="username" placeholder="Nombre de Usuario" required>
+
+    <div class="input-wrapper">
     <input type="password" id="password" placeholder="Contraseña" required>
+    <img src="EyeOpen.png" id="togglePassword" class="eye-icon">
+</div>
 
     <button id="loginBtn">Iniciar</button>
     <button id="goSignupBtn">Crear una Cuenta</button>
@@ -167,32 +189,37 @@ button {
 
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
     const errorMsg = document.getElementById("errorMsg");
     const loginBtn = document.getElementById("loginBtn");
+
+    // Toggle password visibility
+    togglePassword.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.src = "EyeClosed.png";
+        } else {
+            passwordInput.type = "password";
+            togglePassword.src = "EyeOpen.png";
+        }
+    });
 
     loginBtn.addEventListener("click", () => {
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
         const email = `${username}@keevliapp.com`;
 
-        // Disable button and show loading text
         loginBtn.disabled = true;
         loginBtn.textContent = "Cargando...";
 
         signInWithEmailAndPassword(auth, email, password)
             .then(() => {
-                const audio = new Audio('SelectGameSound.mp3');
-                audio.play();
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 1000);
+                new Audio('SelectGameSound.mp3').play();
+                setTimeout(() => { window.location.href = "index.html"; }, 1000);
             })
             .catch((error) => {
                 errorMsg.textContent = error.message;
-                const audio = new Audio('DisSound.mp3');
-                audio.play();
-
-                // Re-enable button and reset text
+                new Audio('DisSound.mp3').play();
                 loginBtn.disabled = false;
                 loginBtn.textContent = "Iniciar";
             });

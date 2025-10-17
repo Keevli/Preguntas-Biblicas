@@ -161,12 +161,12 @@ function goBack() {
 
 <div class="input-wrapper">
     <input type="password" id="password" placeholder="Contraseña" required>
-    <img src="EyeClosed.png" id="togglePassword" class="eye-icon">
+    <img src="EyeOpen.png" id="togglePassword" class="eye-icon">
 </div>
 
 <div class="input-wrapper">
     <input type="password" id="confirmPassword" placeholder="Confirmar Contraseña" required>
-    <img src="EyeClosed.png" id="toggleConfirmPassword" class="eye-icon">
+    <img src="EyeOpen.png" id="toggleConfirmPassword" class="eye-icon">
 </div>
 
 <button id="signupBtn">Crear Cuenta</button>
@@ -215,10 +215,10 @@ const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
 function toggleEye(inputField, toggleImg) {
     if (inputField.type === "password") {
         inputField.type = "text";
-        toggleImg.src = "EyeOpen.png";
+        toggleImg.src = "EyeClosed.png";
     } else {
         inputField.type = "password";
-        toggleImg.src = "EyeClosed.png";
+        toggleImg.src = "EyeOpen.png";
     }
 }
 
