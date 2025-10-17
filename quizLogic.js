@@ -100,12 +100,22 @@ questions = getRandomQuestions();
 
 window.addEventListener("load", () => {
     const instructionsOverlay = document.querySelector(".instructions-overlay");
+    const loadingOverlay = document.getElementById("loadingOverlay");
 
-    // Fade in instructions
+    // Give a tiny delay so the white background and icon are visible
     setTimeout(() => {
+        // Fade in instructions
         instructionsOverlay.style.opacity = 1;
-    }, 200); // small delay to let white overlay render
+
+        // Hide the loading overlay
+        loadingOverlay.style.opacity = 0;
+        loadingOverlay.style.transition = "opacity 0.5s ease";
+        setTimeout(() => {
+            loadingOverlay.style.display = "none";
+        }, 500);
+    }, 500); // 0.5s delay so user sees the loading icon
 });
+
 
 startBtn.addEventListener("click", () => {
     const instructionsOverlay = document.querySelector(".instructions-overlay");
