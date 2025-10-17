@@ -89,15 +89,22 @@
         margin-top: 10px;
     }
 
-    #signupBtn:hover {
+    #signupBtn:hover:not(:disabled) {
         transform: scale(1.05);
         background-color: rgb(255, 255, 120);
         box-shadow: 0 3px 0 rgb(200, 140, 0);
     }
 
-    #signupBtn:active {
+    #signupBtn:active:not(:disabled) {
         transform: translateY(3px) scale(0.98);
         box-shadow: 0 2px 0 rgb(150, 100, 0);
+    }
+
+    #signupBtn:disabled {
+        background-color: rgb(200, 200, 80);
+        cursor: not-allowed;
+        transform: scale(1);
+        box-shadow: 0 3px 0 rgb(150, 150, 50);
     }
 
     #back-button {
@@ -199,11 +206,12 @@ const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirmPassword");
 const errorMsg = document.getElementById("errorMsg");
 const passwordError = document.getElementById("passwordError");
+const signupBtn = document.getElementById("signupBtn");
 
 const togglePassword = document.getElementById("togglePassword");
 const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
 
-// Toggle password visibility with eye images
+// Toggle password visibility
 function toggleEye(inputField, toggleImg) {
     if (inputField.type === "password") {
         inputField.type = "text";
@@ -217,8 +225,8 @@ function toggleEye(inputField, toggleImg) {
 togglePassword.addEventListener("click", () => toggleEye(passwordInput, togglePassword));
 toggleConfirmPassword.addEventListener("click", () => toggleEye(confirmPasswordInput, toggleConfirmPassword));
 
-// Signup logic
-document.getElementById("signupBtn").addEventListener("click", async () => {
+// Signup logic with loading state
+signupBtn.addEventListener("click", async () => {
     errorMsg.textContent = "";
     passwordError.textContent = "";
 
@@ -226,15 +234,18 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
     const email = `${username}@keevliapp.com`;
-
     const onlyLettersRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/;
 
+    // Basic validations
     if (username.length === 0) { errorMsg.textContent = "Por favor, ingresa un nombre de usuario."; return; }
     if (!onlyLettersRegex.test(username)) { errorMsg.textContent = "El nombre de usuario solo puede contener letras."; return; }
     if (username.length > 12) { errorMsg.textContent = "El nombre de usuario no puede tener más de 12 caracteres."; return; }
     if (username.length < 3) { errorMsg.textContent = "El nombre de usuario debe tener al menos 3 letras."; return; }
-
     if (password !== confirmPassword) { passwordError.textContent = "Las contraseñas no coinciden."; return; }
+
+    // Disable button and show loading
+    signupBtn.disabled = true;
+    signupBtn.textContent = "Cargando...";
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -257,6 +268,8 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
 
     } catch (error) {
         errorMsg.textContent = "Error al crear la cuenta: " + error.message;
+        signupBtn.disabled = false;
+        signupBtn.textContent = "Crear Cuenta";
     }
 });
 </script>

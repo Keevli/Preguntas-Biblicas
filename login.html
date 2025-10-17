@@ -85,15 +85,22 @@ button {
     margin-top: 10px;
 }
 
-#loginBtn:hover {
+#loginBtn:hover:not(:disabled) {
     transform: scale(1.05);
     background-color: rgb(255, 255, 120);
     box-shadow: 0 3px 0 rgb(200, 140, 0);
 }
 
-#loginBtn:active {
+#loginBtn:active:not(:disabled) {
     transform: translateY(3px) scale(0.98);
     box-shadow: 0 2px 0 rgb(150, 100, 0);
+}
+
+#loginBtn:disabled {
+    background-color: rgb(180, 180, 80);
+    cursor: not-allowed;
+    transform: scale(1);
+    box-shadow: 0 3px 0 rgb(150, 150, 50);
 }
 
 /* 🟦 Signup button (blue, matching smaller style) */
@@ -146,15 +153,14 @@ button {
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
-    apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
-    authDomain: "keevli.firebaseapp.com",
-    projectId: "keevli",
-    storageBucket: "keevli.firebasestorage.app",
-    messagingSenderId: "1057187563274",
-    appId: "1:1057187563274:web:df61aed04b3a2c63a19cf3",
-    measurementId: "G-4E8SQT6TL1"
-};
-
+        apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
+        authDomain: "keevli.firebaseapp.com",
+        projectId: "keevli",
+        storageBucket: "keevli.firebasestorage.app",
+        messagingSenderId: "1057187563274",
+        appId: "1:1057187563274:web:df61aed04b3a2c63a19cf3",
+        measurementId: "G-4E8SQT6TL1"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -162,24 +168,33 @@ button {
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
     const errorMsg = document.getElementById("errorMsg");
+    const loginBtn = document.getElementById("loginBtn");
 
-    document.getElementById("loginBtn").addEventListener("click", () => {
+    loginBtn.addEventListener("click", () => {
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
         const email = `${username}@keevliapp.com`;
+
+        // Disable button and show loading text
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Cargando...";
 
         signInWithEmailAndPassword(auth, email, password)
             .then(() => {
                 const audio = new Audio('SelectGameSound.mp3');
                 audio.play();
-                  setTimeout(() => {
+                setTimeout(() => {
                     window.location.href = "index.html";
-                 }, 1000);
+                }, 1000);
             })
             .catch((error) => {
                 errorMsg.textContent = error.message;
                 const audio = new Audio('DisSound.mp3');
                 audio.play();
+
+                // Re-enable button and reset text
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Iniciar";
             });
     });
 
