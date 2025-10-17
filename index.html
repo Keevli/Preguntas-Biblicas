@@ -124,7 +124,7 @@ body {
     box-shadow: 0 2px 0 rgb(180, 130, 0);
 }
 
-/* 🎮 HERO "JUGAR" BUTTON — bigger & more playful! */
+/* Jugar button */
 #startQuizBtn {
     padding: 20px 70px;
     font-size: 32px;
@@ -190,7 +190,7 @@ body {
 
 .selected-pp {
     box-shadow: 0 0 15px 5px rgb(255, 255, 255);
-    transform: scale(1.2) !important; /* optional: make it pop slightly */
+    transform: scale(1.2) !important;
     transition: all 0.2s ease-in-out;
 }
 
@@ -239,6 +239,16 @@ body {
 
 .closeProfileBtn:hover { background-color: rgb(180, 160, 40); }
 
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
 </style>
 </head>
 <body>
@@ -253,7 +263,7 @@ body {
         <img id="profileImg" src="profiles/PPB0.png" alt="Perfil" />
     </div>
 </div>
-
+<canvas id="bgCanvas"></canvas>
 <!-- Main content -->
 <div class="home-container">
     <img src="PDLBlogo.png" alt="PDLB Logo" class="main-logo">
@@ -400,27 +410,109 @@ profileBtn.addEventListener('click', async () => {
     const ppgRow = dynamicView.querySelector('#ppgRow');
     ppbRow.innerHTML = ''; ppgRow.innerHTML = '';
 
-    const createImageOption = (imgName) => {
-        const img = document.createElement('img');
-        img.src = `profiles/${imgName}.png`;
-        img.style.width = '50px';
-        img.style.height = '50px';
-        img.style.borderRadius = '50%';
-        img.style.cursor = 'pointer';
-        img.style.transition = 'transform 0.15s, filter 0.15s';
+const createImageOption = (imgName) => {
+    // Wrapper div
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
 
-        const isUnlocked = userData.unlocked.includes(imgName);
-        img.style.filter = isUnlocked ? 'brightness(1)' : 'brightness(0.5)';
+    // Profile image
+    const img = document.createElement('img');
+    img.src = `profiles/${imgName}.png`;
+    img.style.width = '50px';
+    img.style.height = '50px';
+    img.style.borderRadius = '50%';
+    img.style.cursor = 'pointer';
+    img.style.transition = 'transform 0.15s, filter 0.15s';
 
-        // Hover + press effect
-        img.addEventListener('mouseover', () => img.style.transform = 'scale(1.2)');
-        img.addEventListener('mouseout', () => img.style.transform = 'scale(1)');
-        img.addEventListener('mousedown', () => img.style.transform = 'scale(0.9)');
-        img.addEventListener('mouseup', () => img.style.transform = 'scale(1.2)');
-        img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
+    let isUnlocked = userData.unlocked.includes(imgName);
+    img.style.filter = isUnlocked ? 'brightness(1)' : 'brightness(0.5)';
 
-        return img;
-    };
+    // Hover + press effects
+    img.addEventListener('mouseover', () => img.style.transform = 'scale(1.2)');
+    img.addEventListener('mouseout', () => img.style.transform = 'scale(1)');
+    img.addEventListener('mousedown', () => img.style.transform = 'scale(0.9)');
+    img.addEventListener('mouseup', () => img.style.transform = 'scale(1.2)');
+    img.addEventListener('mouseleave', () => img.style.transform = 'scale(1)');
+
+    wrapper.appendChild(img);
+
+    // $100 overlay for locked images
+    const priceTag = document.createElement('div');
+    if (!isUnlocked && imgName !== "PPB0" && imgName !== "PPG0") {
+        priceTag.textContent = '100';
+        priceTag.style.position = 'absolute';
+        priceTag.style.top = '-8px';
+        priceTag.style.right = '-8px';
+        priceTag.style.backgroundColor = 'rgba(255, 215, 0, 0.9)';
+        priceTag.style.color = 'black';
+        priceTag.style.fontSize = '12px';
+        priceTag.style.fontWeight = 'bold';
+        priceTag.style.padding = '2px 5px';
+        priceTag.style.borderRadius = '8px';
+        priceTag.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+        priceTag.style.pointerEvents = 'none'; // overlay doesn’t block clicks
+        wrapper.appendChild(priceTag);
+    }
+
+    // Click logic
+    img.addEventListener('click', async () => {
+        // Re-check unlock status
+        isUnlocked = userData.unlocked.includes(imgName);
+
+        // Purchase logic if locked
+        if (!isUnlocked && imgName !== "PPB0" && imgName !== "PPG0") {
+            if (userData.totalPoints < 100) {
+                alert("No tienes suficientes puntos para desbloquear esta imagen.");
+                return;
+            }
+
+            const confirmBuy = confirm(`¿Quieres gastar 100 puntos para desbloquear esta foto de perfil?`);
+            if (!confirmBuy) return;
+
+            // Deduct points & unlock
+            userData.totalPoints -= 100;
+            userData.unlocked.push(imgName);
+            dynamicView.querySelector('#points').textContent = `Puntos: ${userData.totalPoints}`;
+            img.style.filter = 'brightness(1)';
+            isUnlocked = true;
+
+            // Remove $100 overlay
+            if (priceTag.parentNode) priceTag.remove();
+
+            // Play sound
+            const givingPointsSound = document.getElementById('givingPointsSound');
+            givingPointsSound.currentTime = 0;
+            givingPointsSound.play();
+        }
+
+        // Highlight selected image (white shadow)
+        const allImgs = document.querySelectorAll('#ppbRow img, #ppgRow img');
+        allImgs.forEach(p => p.classList.remove('selected-pp'));
+        img.classList.add('selected-pp');
+
+        // Update large profile image and toolbar
+        dynamicView.querySelector('#profileImgLarge').src = img.src;
+        document.getElementById('profileImg').src = img.src;
+
+        // Save changes to Firebase
+        try {
+            const userRef = doc(db, "users", currentUser.uid);
+            await setDoc(userRef, { 
+                profileImage: imgName,
+                totalPoints: userData.totalPoints,
+                unlocked: userData.unlocked
+            }, { merge: true });
+        } catch(err){ console.error(err); }
+    });
+
+    // Automatically highlight the saved profile if it matches
+    if (userData.profileImage === imgName) {
+        img.classList.add('selected-pp');
+    }
+
+    return wrapper;
+};
 
     // Append all images first
     for (let i = 0; i <= 20; i++) ppbRow.appendChild(createImageOption(`PPB${i}`));
@@ -594,6 +686,65 @@ moreBtn.addEventListener('click', () => {
         else toolbar.classList.remove('scrolled');
     });
 });
+
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const width = canvas.width;
+const height = canvas.height;
+
+class BigRect {
+    constructor() { this.reset(); }
+    reset() {
+    this.width = Math.random() * 200 + 150;
+    this.height = Math.random() * 400 + 100;
+    this.x = Math.random() * width;
+
+    // Bias Y toward top and bottom
+    const topRange = Math.random() * (height * 0.3);
+    const bottomRange = height * 0.75 + Math.random() * (height * 0.3);
+    this.y = Math.random() < 0.5 ? topRange : bottomRange;
+
+    this.speedX = -(Math.random() * 0.2 + 0.05);
+
+    const baseR = 245, baseG = 202, baseB = 69;
+    const darkFactor = 0.8 + Math.random() * 0.85;
+    const r = Math.floor(baseR * darkFactor);
+    const g = Math.floor(baseG * darkFactor);
+    const b = Math.floor(baseB * darkFactor);
+    const opacity = Math.random() * 0.3 + 0.5;
+    this.color = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+    update() {
+        this.x += this.speedX;
+        if (this.x + this.width < 0) this.x = width + Math.random() * 100;
+    }
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+// --- Initialize ---
+const bigRects = Array.from({length:20}, () => new BigRect());
+
+// --- Animation ---
+function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Draw rectangles only
+    bigRects.forEach(r => { r.update(); r.draw(); });
+
+    requestAnimationFrame(animate);
+}
+animate();
 </script>
 
 </body>
