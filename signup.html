@@ -10,13 +10,14 @@
     body {
         font-family: 'Carter One', cursive;
         background-size: cover;
-        text-align: center;
-        padding-top: 50px;
         color: white;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 80vh;
+        position: relative;
     }
 
     .fullscreen-gif {
@@ -26,17 +27,6 @@
         height: 100%;
         object-fit: cover;
         z-index: -2;
-    }
-
-    @keyframes zoomOut {
-        0% {
-            transform: scale(1.2);
-            filter: brightness(1.1);
-        }
-        100% {
-            transform: scale(1);
-            filter: brightness(1);
-        }
     }
 
     .gif-overlay {
@@ -52,85 +42,100 @@
         position: relative;
         text-align: center;
         z-index: 1;
+        width: 90%;
+        max-width: 320px;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: block;
+        margin: 10px 0;
+        width: 100%;
     }
 
     input {
-        display: block;
-        margin: 10px auto;
-        padding: 10px;
+        width: 100%;
+        padding: 10px 40px 10px 10px;
         font-size: 16px;
         border-radius: 8px;
-        width: 250px;
         border: none;
+        box-sizing: border-box;
+    }
+
+    .eye-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
     }
 
     button {
-    font-family: 'Carter One', cursive;
-    border: none;
-    cursor: pointer;
-    border-radius: 16px;
-    transition: all 0.25s ease-in-out;
-    transform: rotate(0deg);
-}
+        font-family: 'Carter One', cursive;
+        border: none;
+        cursor: pointer;
+        border-radius: 16px;
+        transition: all 0.25s ease-in-out;
+    }
 
-/* 🟡 Sign Up button (yellow, playful, smaller) */
-#signupBtn {
-    padding: 10px 32px;
-    font-size: 18px;
-    background-color: rgb(255, 240, 60);
-    color: rgb(255, 255, 255);
-    box-shadow: 0 5px 0 rgb(200, 140, 0);
-    margin-top: 10px;
-}
+    #signupBtn {
+        padding: 10px 32px;
+        font-size: 18px;
+        background-color: rgb(255, 240, 60);
+        color: rgb(255, 255, 255);
+        box-shadow: 0 5px 0 rgb(200, 140, 0);
+        margin-top: 10px;
+    }
 
-#signupBtn:hover {
-    transform: scale(1.05);
-    background-color: rgb(255, 255, 120);
-    box-shadow: 0 3px 0 rgb(200, 140, 0);
-}
+    #signupBtn:hover {
+        transform: scale(1.05);
+        background-color: rgb(255, 255, 120);
+        box-shadow: 0 3px 0 rgb(200, 140, 0);
+    }
 
-#signupBtn:active {
-    transform: translateY(3px) scale(0.98);
-    box-shadow: 0 2px 0 rgb(150, 100, 0);
-}
+    #signupBtn:active {
+        transform: translateY(3px) scale(0.98);
+        box-shadow: 0 2px 0 rgb(150, 100, 0);
+    }
 
-/* 🔙 Back button (blue, matching smaller style) */
-#back-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    padding: 9px 28px;
-    font-size: 17px;
-    background-color: rgb(90, 180, 255);
-    color: white;
-    box-shadow: 0 5px 0 rgb(30, 100, 200);
-    border-radius: 16px;
-    transform: rotate(0deg);
-    transition: all 0.25s ease-in-out;
-    cursor: pointer;
-}
+    #back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        padding: 9px 28px;
+        font-size: 17px;
+        background-color: rgb(90, 180, 255);
+        color: white;
+        box-shadow: 0 5px 0 rgb(30, 100, 200);
+        border-radius: 16px;
+        cursor: pointer;
+        z-index: 10;
+    }
 
-#back-button:hover {
-    transform: scale(1.05);
-    background-color: rgb(120, 200, 255);
-    box-shadow: 0 3px 0 rgb(30, 100, 200);
-}
+    #back-button:hover {
+        transform: scale(1.05);
+        background-color: rgb(120, 200, 255);
+        box-shadow: 0 3px 0 rgb(30, 100, 200);
+    }
 
-#back-button:active {
-    transform: translateY(3px) scale(0.98);
-    box-shadow: 0 2px 0 rgb(20, 70, 150);
-}
+    #back-button:active {
+        transform: translateY(3px) scale(0.98);
+        box-shadow: 0 2px 0 rgb(20, 70, 150);
+    }
 
     .error {
         color: rgb(255, 0, 0);
         margin-top: 10px;
+        font-size: 14px;
     }
 </style>
 </head>
 <body>
-    <button id="back-button" class="back-button" onclick="goBack()">&#9664; Atrás</button>
-    <img src="Header.png" alt="Animated GIF" class="fullscreen-gif">
-    <div class="gif-overlay"></div>
+<button id="back-button" onclick="goBack()">&#9664; Atrás</button>
+<img src="Header.png" alt="Animated GIF" class="fullscreen-gif">
+<div class="gif-overlay"></div>
 
 <script>
 const backButton = document.getElementById('back-button');
@@ -146,7 +151,16 @@ function goBack() {
 <h1>Crear una Cuenta</h1>
 
 <input type="text" id="username" placeholder="Nombre de Usuario" required>
-<input type="password" id="password" placeholder="Contraseña" required>
+
+<div class="input-wrapper">
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <img src="EyeClosed.png" id="togglePassword" class="eye-icon">
+</div>
+
+<div class="input-wrapper">
+    <input type="password" id="confirmPassword" placeholder="Confirmar Contraseña" required>
+    <img src="EyeClosed.png" id="toggleConfirmPassword" class="eye-icon">
+</div>
 
 <button id="signupBtn">Crear Cuenta</button>
 
@@ -158,14 +172,15 @@ function goBack() {
 </p>
 
 <p class="error" id="errorMsg"></p>
+<p class="error" id="passwordError"></p>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyADhesCk4kYXN73EyYaOuYgB1dQxzIQLkk",
     authDomain: "keevli.firebaseapp.com",
     projectId: "keevli",
@@ -175,48 +190,56 @@ function goBack() {
     measurementId: "G-4E8SQT6TL1"
 };
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
+const errorMsg = document.getElementById("errorMsg");
+const passwordError = document.getElementById("passwordError");
 
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const errorMsg = document.getElementById("errorMsg");
+const togglePassword = document.getElementById("togglePassword");
+const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
 
-    document.getElementById("signupBtn").addEventListener("click", () => {
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
-        const email = `${username}@keevliapp.com`;
+// Toggle password visibility with eye images
+function toggleEye(inputField, toggleImg) {
+    if (inputField.type === "password") {
+        inputField.type = "text";
+        toggleImg.src = "EyeOpen.png";
+    } else {
+        inputField.type = "password";
+        toggleImg.src = "EyeClosed.png";
+    }
+}
 
-        // Validation rules
-        const onlyLettersRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/; // allows accented Spanish letters too
+togglePassword.addEventListener("click", () => toggleEye(passwordInput, togglePassword));
+toggleConfirmPassword.addEventListener("click", () => toggleEye(confirmPasswordInput, toggleConfirmPassword));
 
-        if (username.length === 0) {
-            errorMsg.textContent = "Por favor, ingresa un nombre de usuario.";
-            return;
-        }
+// Signup logic
+document.getElementById("signupBtn").addEventListener("click", async () => {
+    errorMsg.textContent = "";
+    passwordError.textContent = "";
 
-        if (!onlyLettersRegex.test(username)) {
-            errorMsg.textContent = "El nombre de usuario solo puede contener letras (sin números, emojis ni símbolos).";
-            return;
-        }
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    const email = `${username}@keevliapp.com`;
 
-        if (username.length > 12) {
-            errorMsg.textContent = "El nombre de usuario no puede tener más de 12 caracteres.";
-            return;
-        }
+    const onlyLettersRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]+$/;
 
-        if (username.length < 3) {
-            errorMsg.textContent = "El nombre de usuario debe tener al menos 3 letras.";
-            return;
-        }
+    if (username.length === 0) { errorMsg.textContent = "Por favor, ingresa un nombre de usuario."; return; }
+    if (!onlyLettersRegex.test(username)) { errorMsg.textContent = "El nombre de usuario solo puede contener letras."; return; }
+    if (username.length > 12) { errorMsg.textContent = "El nombre de usuario no puede tener más de 12 caracteres."; return; }
+    if (username.length < 3) { errorMsg.textContent = "El nombre de usuario debe tener al menos 3 letras."; return; }
 
-        createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
+    if (password !== confirmPassword) { passwordError.textContent = "Las contraseñas no coinciden."; return; }
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        const db = getFirestore(app);
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
             username: username,
@@ -229,14 +252,13 @@ function goBack() {
             selectedCharacter: "Char1"
         });
 
-        const audio = new Audio('SelectGameSound.mp3');
-        audio.play();
+        new Audio('SelectGameSound.mp3').play();
+        setTimeout(() => { window.location.href = "index.html"; }, 800);
 
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 800);
-    })
-    });
+    } catch (error) {
+        errorMsg.textContent = "Error al crear la cuenta: " + error.message;
+    }
+});
 </script>
 
 </body>
