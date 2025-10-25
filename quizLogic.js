@@ -19,7 +19,7 @@ let currentQuestionIndex = 0;
 let questions = [];
 let correctAnswersCount = 0;
 
-// 20 Bible questions
+// Bible questions
 const questionsByLevel = [
     { question: "¿Quién construyó el arca?", options: ["Moisés", "Noé", "Abraham"], answer: 1 },
     { question: "¿Quién fue el primer hombre?", options: ["Adán", "Caín", "Abel"], answer: 0 },
@@ -82,7 +82,8 @@ const questionsByLevel = [
     { question: "¿Cuál fue la señal del pacto de Dios con Noé?", options: ["Una paloma", "El arco iris", "Las nubes"], answer: 1 },
     { question: "¿Quién fue la reina que arriesgó su vida por su pueblo?", options: ["Ester", "Rut", "Débora"], answer: 0 },
     { question: "¿Cuál fue el nombre del jardín donde vivieron Adán y Eva?", options: ["Edén", "Getsemaní", "Hebrón"], answer: 0 },
-    { question: "¿Quien de estos fue un hermano de José?", options: ["Jacob", "Elias", "Ruben"], answer: 2 },
+    { question: "¿Quien de estos fue un hermano de José?", options: ["Jacob", "Elias", "Rubén"], answer: 2 },
+    { question: "¿Que hizo Dios a las personas que construyeron la torre de babel?", options: ["Les cambio sus familias", "Les cambio el parecer", "Les cambio el lenguaje"], answer: 2}
 ];
 
 // Random questions
@@ -102,7 +103,6 @@ window.addEventListener("load", () => {
     const instructionsOverlay = document.querySelector(".instructions-overlay");
     const loadingOverlay = document.getElementById("loadingOverlay");
 
-    // Give a tiny delay so the white background and icon are visible
     setTimeout(() => {
         // Fade in instructions
         instructionsOverlay.style.opacity = 1;
